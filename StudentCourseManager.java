@@ -6,9 +6,6 @@ import java.util.List;
 
 public class StudentCourseManager {
 
-    /* ------------------------------------------------------------------ */
-    /* Model                                                              */
-    /* ------------------------------------------------------------------ */
     static class Course {
         final String code;
         final String title;
@@ -22,21 +19,15 @@ public class StudentCourseManager {
     }
 
     private final List<Course> courses = new ArrayList<>();
-    private final String filename = "courses.txt";   // replaces localStorage
+    private final String filename = "courses.txt";
 
     private JFrame frame;
     private JTextField codeInput, titleInput, unitsInput, searchInput;
 
-    /* ------------------------------------------------------------------ */
-    /* Entry point                                                        */
-    /* ------------------------------------------------------------------ */
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new StudentCourseManager().createAndShowGui());
     }
 
-    /* ------------------------------------------------------------------ */
-    /* GUI                                                                */
-    /* ------------------------------------------------------------------ */
     private void createAndShowGui() {
         frame = new JFrame("Student Course Management System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,7 +44,6 @@ public class StudentCourseManager {
         container.add(heading);
         container.add(Box.createVerticalStrut(18));
 
-        /* ---- Row 1: add a course ---- */
         codeInput  = new JTextField(8);
         titleInput = new JTextField(14);
         unitsInput = new JTextField(4);
@@ -75,7 +65,6 @@ public class StudentCourseManager {
         container.add(row1);
         container.add(Box.createVerticalStrut(12));
 
-        /* ---- Row 2: actions ---- */
         searchInput = new JTextField(10);
 
         JButton searchBtn  = new JButton("Search");
@@ -104,17 +93,13 @@ public class StudentCourseManager {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        frame.getRootPane().setDefaultButton(addBtn);   // Enter = Add Course
+        frame.getRootPane().setDefaultButton(addBtn);
     }
 
-    /* ------------------------------------------------------------------ */
-    /* The pop-up screen (a modal dialog, like the web modal)             */
-    /* ------------------------------------------------------------------ */
     private void showPopup(String text) {
         JDialog dialog = new JDialog(frame, "Output Screen", true);
         dialog.setLayout(new BorderLayout());
 
-        // Header bar
         JPanel header = new JPanel(new BorderLayout());
         header.setBackground(new Color(0x333333));
 
@@ -134,7 +119,6 @@ public class StudentCourseManager {
         header.add(title, BorderLayout.WEST);
         header.add(close, BorderLayout.EAST);
 
-        // Dark output area
         JTextArea output = new JTextArea(text);
         output.setEditable(false);
         output.setBackground(new Color(0x1E1E1E));
@@ -151,12 +135,9 @@ public class StudentCourseManager {
         dialog.add(scroll, BorderLayout.CENTER);
         dialog.pack();
         dialog.setLocationRelativeTo(frame);
-        dialog.setVisible(true);        // blocks here until closed (modal)
+        dialog.setVisible(true); 
     }
 
-    /* ------------------------------------------------------------------ */
-    /* Commands                                                           */
-    /* ------------------------------------------------------------------ */
     private void addCourse() {
         String code  = codeInput.getText();
         String title = titleInput.getText();
@@ -226,7 +207,6 @@ public class StudentCourseManager {
         showPopup("Course " + upper + " not found.");
     }
 
-    /** Recursive total, exactly like the JS version. */
     private int totalUnits(List<Course> list) {
         if (list.isEmpty()) {
             return 0;
@@ -238,9 +218,6 @@ public class StudentCourseManager {
         showPopup("Total units: " + totalUnits(courses));
     }
 
-    /* ------------------------------------------------------------------ */
-    /* Persistence — a real file now instead of localStorage              */
-    /* ------------------------------------------------------------------ */
     private void saveToFile() {
         try (PrintWriter out = new PrintWriter(new FileWriter(filename))) {
             for (Course c : courses) {
@@ -273,7 +250,6 @@ public class StudentCourseManager {
                     int units = Integer.parseInt(parts[2].trim());
                     courses.add(new Course(parts[0], parts[1], units));
                 } catch (NumberFormatException ignored) {
-                    // skip malformed line, same as the JS version
                 }
             }
             showPopup("Loaded " + courses.size() + " courses from file.");
